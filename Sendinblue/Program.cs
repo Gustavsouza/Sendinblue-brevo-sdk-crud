@@ -310,7 +310,7 @@ static void ListarAtributos(ContactsApi apiInstance)
                 Console.WriteLine($"Subcategorias do atributo: ");
                 foreach (var subcategoria in atributo.Enumeration)
                 {
-                    Console.WriteLine($"- {subcategoria.Label}");
+                   Console.WriteLine($"ID: {subcategoria.Value} - Valor: {subcategoria.Label}");
                 }
             }
 
