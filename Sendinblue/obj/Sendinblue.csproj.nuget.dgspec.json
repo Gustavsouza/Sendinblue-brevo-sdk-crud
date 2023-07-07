@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\gustavo\\Documents\\GitHub\\Alura\\API\\Sendinblue\\Sendinblue\\Sendinblue.csproj": {}
+    "C:\\Users\\gustavo\\Documents\\GitHub\\Sendinblue-brevo-sdk-crud\\Sendinblue\\Sendinblue.csproj": {}
   },
   "projects": {
-    "C:\\Users\\gustavo\\Documents\\GitHub\\Alura\\API\\Sendinblue\\Sendinblue\\Sendinblue.csproj": {
+    "C:\\Users\\gustavo\\Documents\\GitHub\\Sendinblue-brevo-sdk-crud\\Sendinblue\\Sendinblue.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\gustavo\\Documents\\GitHub\\Alura\\API\\Sendinblue\\Sendinblue\\Sendinblue.csproj",
+        "projectUniqueName": "C:\\Users\\gustavo\\Documents\\GitHub\\Sendinblue-brevo-sdk-crud\\Sendinblue\\Sendinblue.csproj",
         "projectName": "Sendinblue",
-        "projectPath": "C:\\Users\\gustavo\\Documents\\GitHub\\Alura\\API\\Sendinblue\\Sendinblue\\Sendinblue.csproj",
+        "projectPath": "C:\\Users\\gustavo\\Documents\\GitHub\\Sendinblue-brevo-sdk-crud\\Sendinblue\\Sendinblue.csproj",
         "packagesPath": "C:\\Users\\gustavo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\gustavo\\Documents\\GitHub\\Alura\\API\\Sendinblue\\Sendinblue\\obj\\",
+        "outputPath": "C:\\Users\\gustavo\\Documents\\GitHub\\Sendinblue-brevo-sdk-crud\\Sendinblue\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\gustavo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -43,6 +43,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "sib_api_v3_sdk": {
+              "target": "Package",
+              "version": "[4.0.2, )"
             }
           },
           "imports": [
