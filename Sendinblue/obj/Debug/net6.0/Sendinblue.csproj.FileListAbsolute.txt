@@ -1,0 +1,17 @@
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\bin\Debug\net6.0\Sendinblue.exe
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\bin\Debug\net6.0\Sendinblue.deps.json
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\bin\Debug\net6.0\Sendinblue.runtimeconfig.json
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\bin\Debug\net6.0\Sendinblue.dll
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\bin\Debug\net6.0\Sendinblue.pdb
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\Sendinblue.csproj.AssemblyReference.cache
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\Sendinblue.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\Sendinblue.AssemblyInfoInputs.cache
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\Sendinblue.AssemblyInfo.cs
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\Sendinblue.csproj.CoreCompileInputs.cache
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\Sendinblue.csproj.CopyComplete
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\Sendinblue.dll
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\refint\Sendinblue.dll
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\Sendinblue.pdb
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\Sendinblue.genruntimeconfig.cache
+C:\Users\gustavo\Documents\GitHub\Alura\API\Sendinblue\Sendinblue\obj\Debug\net6.0\ref\Sendinblue.dll

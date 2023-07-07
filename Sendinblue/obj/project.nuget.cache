@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "nnZ3b3FLC8sVe9OGM20fTIoEPhto1VVO0SMlm01MO6F+UTo9AVTxwUU4upDSp/PKww5eiAcgIBhA+YffofwVRA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\gustavo\\Documents\\GitHub\\Alura\\API\\Sendinblue\\Sendinblue\\Sendinblue.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\gustavo\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
