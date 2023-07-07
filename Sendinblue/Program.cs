@@ -1,149 +1,373 @@
-﻿using Newtonsoft.Json;
-using Sendinblue;
-using System.Globalization;
+﻿using sib_api_v3_sdk.Api;
+using sib_api_v3_sdk.Client;
+using sib_api_v3_sdk.Model;
 
-public class Program
+Configuration.Default.ApiKey.Add("api-key", "SUA KEY BONITÃO");
+
+// Instanciando a classe de API para manipular os contatos
+var apiInstance = new ContactsApi();
+
+bool sair = false;
+while (!sair)
 {
-    private static async Task Main(string[] args)
+    Console.WriteLine("=== MENU ===");
+    Console.WriteLine("1. Criar Contato");
+    Console.WriteLine("2. Atualizar Atributo do Contato");
+    Console.WriteLine("3. Criar Atributos do Contato");
+    Console.WriteLine("4. Deletar um Contato");
+    Console.WriteLine("5. Buscar um Contato");
+    Console.WriteLine("6. Buscar todos os atributos");
+    Console.WriteLine("7. Criar contatos com todos os atributos existentes");
+    Console.WriteLine("8. Sair");
+
+    Console.Write("Digite a opção desejada: ");
+    string opcao = Console.ReadLine();
+
+    switch (opcao)
     {
-       Configuration.Default.ApiKey.Add("api-key", "SUA CHAVE BONITÃO");
+        case "1":
+            // Criar Contato
+            CriarContato(apiInstance);
+            break;
 
-        SendinBlueService sendinBlueService = new SendinBlueService(apiKey);
-        bool exit = false;
-        while (!exit)
+        case "2":
+            // Atualizar Atributo do Contato
+            AtualizarContato(apiInstance);
+            break;
+
+        case "3":
+            // Inserir Atributos do Contato
+            CriarAtributoContatos(apiInstance);
+            break;
+
+        case "4":
+            //Apagar usuario
+            DeletarUsuario(apiInstance);
+            break;
+
+        case "5":
+            //Apagar usuario
+            BuscarUsuario(apiInstance);
+            break;
+
+        case "6":
+            //Buscar todos os atributos existentes
+            ListarAtributos(apiInstance);
+            break;
+
+        case "7":
+            //Criar contatos com todos os atributos existentes
+            CriarContatoComAtributosDisponiveis(apiInstance);
+            break;
+
+        case "8":
+            // Sair
+            sair = true;
+            break;
+
+        default:
+            Console.WriteLine("Opção inválida. Tente novamente.");
+            break;
+    }
+
+    Console.WriteLine();
+}
+
+static void CriarContato(ContactsApi apiInstance)
+{
+    Console.WriteLine("========= CRIAR CONTATO =========");
+    try
+    {
+        Console.WriteLine("Digite o e-mail do contato:");
+        string email = Console.ReadLine();
+
+        Console.WriteLine("Digite o nome do contato:");
+        string nome = Console.ReadLine();
+
+        Console.WriteLine("Digite a data de nascimento do contato:");
+        string Dtnascimento = Console.ReadLine();
+
+        // Criando um objeto de contato
+        CreateContact contato = new CreateContact
         {
-            Console.WriteLine("\nDigite a opção desejada:");
-            Console.WriteLine("1. Criar um contato");
-            Console.WriteLine("3. Buscar contatos");
-            Console.WriteLine("4. Atualizar atributos de um contato");
-            Console.WriteLine("5. Criar novos atributos para todos os contato");
-            Console.WriteLine("6. Buscar contatos response");
-            Console.WriteLine("0. Sair");
+            Email = email,
+            ListIds = new System.Collections.Generic.List<long?> { 1 }, // IDs das listas de contatos às quais você deseja adicionar o contato(caso tenha)
+            UpdateEnabled = true, // Defina como true para atualizar o contato se ele já existir ou false para criar um novo contato
+            Attributes = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { "Nome", nome }, // Exemplo de atributo personalizado
+            { "DTNASCIMENTO", Dtnascimento } // Exemplo de atributo personalizado
+        }
+        };
 
-            string option = Console.ReadLine();
-            switch (option)
+        // Criando o contato
+        CreateUpdateContactModel result = apiInstance.CreateContact(contato);
+        Console.WriteLine("Contato criado com sucesso. ID do contato: " + result.Id);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("ERRO: " + e.Message);
+    }
+}
+
+static void AtualizarContato(ContactsApi apiInstance)
+{
+    Console.WriteLine("========= ATUALIZAR CONTATO =========");
+    Console.WriteLine("Digite o ID do usuário para ser atualizado");
+    string id = Console.ReadLine();
+
+    if (long.TryParse(id, out long contatoId))
+    {
+        Console.Write("Digite o nome do atributo: ");
+        string atributoNome = Console.ReadLine();
+
+        Console.Write("Digite o valor do atributo: ");
+        string atributoValor = Console.ReadLine();
+
+        var attributes = new Dictionary<string, object>(); // Usar object para aceitar valores booleanos
+
+        if (DateTime.TryParse(atributoValor, out DateTime data))
+        {
+            attributes.Add(atributoNome, data.ToString("yyyy-MM-dd"));
+        }
+        else if (bool.TryParse(atributoValor, out bool atributoValorBool))
+        {
+            attributes.Add(atributoNome, atributoValorBool);
+        }
+        else
+        {
+            attributes.Add(atributoNome, atributoValor);
+        }
+
+        var contatoAtributos = new UpdateContact
+        {
+            Attributes = attributes
+        };
+
+        try
+        {
+            apiInstance.UpdateContact(id, contatoAtributos);
+            Console.WriteLine("Atributo do contato atualizado com sucesso.");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Erro ao atualizar o atributo do contato: " + e.Message);
+        }
+    }
+    else
+    {
+        Console.WriteLine("ID de contato inválido.");
+    }
+}
+
+static async void CriarAtributoContatos(ContactsApi apiInstance)
+{
+    Console.WriteLine("========= CRIAR ATRIBUTO PARA CONTATO =========");
+    Console.Write("Digite o nome do atributo: ");
+    string atributoNome = Console.ReadLine();
+
+    Console.Write("Digite o tipo do atributo: ");
+    string atributoTipo = Console.ReadLine();
+
+    Console.Write("Digite a categoria do atributo: ");
+    string attributeCategory = Console.ReadLine();
+
+    CreateAttribute createAttribute = null;
+
+    if (atributoTipo.ToLower() == "boolean")
+    {
+        createAttribute = new CreateAttribute { Value = null, Type = CreateAttribute.TypeEnum.Boolean };
+    }
+    else if (atributoTipo.ToLower() == "datetime")
+    {
+        createAttribute = new CreateAttribute { Value = null, Type = CreateAttribute.TypeEnum.Date };
+    }
+    else if (atributoTipo.ToLower() == "float")
+    {
+        createAttribute = new CreateAttribute { Value = null, Type = CreateAttribute.TypeEnum.Float };
+    }
+    else if (atributoTipo.ToLower() == "text")
+    {
+        createAttribute = new CreateAttribute { Type = CreateAttribute.TypeEnum.Text };
+    }
+    else
+    {
+        //string attributeCategory = "category";
+        // Criar as enumerações do atributo
+        List<CreateAttributeEnumeration> enumerations = new List<CreateAttributeEnumeration>();
+
+        Console.WriteLine("Digite as opções de enumeração (digite 'sair' para finalizar):");
+
+        string optionValue;
+        int optionNumber = 1;
+
+        while (true)
+        {
+            Console.Write($"Opção {optionNumber}: ");
+            optionValue = Console.ReadLine();
+
+            if (optionValue.ToLower() == "sair")
             {
-                case "1":
-                    Console.WriteLine("Digite o e-mail do contato:");
-                    string email = Console.ReadLine();
+                break;
+            }
 
-                    Console.WriteLine("Digite o nome do contato:");
-                    string nome = Console.ReadLine();
+            var enumeration = new CreateAttributeEnumeration(optionNumber, optionValue);
+            enumerations.Add(enumeration);
 
-                    Console.WriteLine("Digite a data de nascimento do contato (formato: dd/mm/aaaa):");
-                    string dataNascimentoStr = Console.ReadLine();
-                    DateTime dataNascimento;
+            optionNumber++;
+        }
 
-                    if (DateTime.TryParseExact(dataNascimentoStr, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out dataNascimento))
-                    {
-                        Contato contato = new Contato
-                        {
-                            Email = email,
-                            EmailBlacklisted = false,
-                            SmsBlacklisted = false,
-                            CreatedAt = DateTime.Now,
-                            ModifiedAt = DateTime.Now,
-                            ListIds = new List<int>(),
-                            NOME = nome,
-                            DtNascimento = dataNascimento.ToString("yyyy-MM-dd"),
-                            Ativo = true,
-                        };
+        CreateAttribute.TypeEnum type = CreateAttribute.TypeEnum.Category;
 
-                        await sendinBlueService.CriarContato(contato);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Data de nascimento inválida.");
-                    }
-                    break;
+        try
+        {
+            // Criar o objeto CreateAttribute
+            createAttribute = new CreateAttribute(null, false, enumerations, type);
 
-                case "3":
-                    // Buscar todos os contatos
-                    List<Contato> contacts = await sendinBlueService.BuscarContatos();
-                    if (contacts != null)
-                    {
-                        Console.WriteLine("Contatos encontrados:");
-                        foreach (var contact in contacts)
-                        {
-                            Console.WriteLine($"Email: {contact.Email}");
-                            Console.WriteLine($"ID: {contact.Id}");
-                            Console.WriteLine($"AtributosPersonalizados: {contact.Attributes.Count()}");
-                            foreach (var attribute in contact.Attributes)
-                            {
-                                Console.WriteLine($"{attribute.Key}: {attribute.Value}");
-                            }
-                            Console.WriteLine();
-                        }
+            // Inserir o atributo
+            apiInstance.CreateAttribute(attributeCategory, atributoNome, createAttribute);
 
-                        // Serializar a lista de contatos em formato JSON
-                        string json = Newtonsoft.Json.JsonConvert.SerializeObject(contacts, Formatting.Indented);
+            Console.WriteLine("Atributo criado com sucesso.");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Erro ao criar o atributo: " + e.Message);
+        }
+    }
+    try
+    {
+        //string attributeCategory = "normal";
+        if (attributeCategory.ToLower() != "category")
+        {
+            await apiInstance.CreateAttributeAsync(attributeCategory, atributoNome, createAttribute);
+            Console.WriteLine("Atributo do contato criado com sucesso.");
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("Erro ao criar o atributo do contato: " + e.Message);
+    }
+}
 
-                        // Caminho do arquivo na área de trabalho
-                        string desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                        string filePath = Path.Combine(desktopPath, "contatos.json");
+static void DeletarUsuario(ContactsApi apiInstance)
+{
+    Console.WriteLine("========= DELETAR CONTATO =========");
+    Console.Write("Digite o email do usuário a ser deletado ");
+    string email = Console.ReadLine();
 
-                        // Salvar o JSON em um arquivo
-                        File.WriteAllText(filePath, json);
+    try
+    {
+        apiInstance.DeleteContact(email);
+        Console.WriteLine("Usuario deletado com sucesso.");
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+        Console.ReadLine();
+    }
+}
 
-                        Console.WriteLine($"O arquivo 'contatos.json' foi salvo na área de trabalho.");
-                    }
-                    break;
+static void BuscarUsuario(ContactsApi apiInstance)
+{
+    Console.WriteLine("========= BUSCAR CONTATO =========");
+    Console.Write("Digite o email ou ID do usuário a ser buscado ");
+    string email = Console.ReadLine();
+    try
+    {
+        GetExtendedContactDetails result = apiInstance.GetContactInfo(email);
+        if (result is not null)
+        {
+            Console.WriteLine("Contato encontrado com sucesso! \n");
+            Console.WriteLine(result.ToJson());
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+        Console.ReadLine();
+    }
+}
 
-                case "4":
-                    Console.WriteLine("Digite o e-mail do contato para atualizar os atributos:");
-                    string emailContato = Console.ReadLine();
+static void ListarAtributos(ContactsApi apiInstance)
+{
+    Console.WriteLine("========= LISTAR ATRIBUTOS PREENCHÍVEIS PARA O CONTATO =========");
+    try
+    {
+        GetAttributes result = apiInstance.GetAttributes();
+        // Filtrar os atributos pela categoria NORMAL E CATEGORY
+        List<GetAttributesAttributes> atributosNormaisEcategoria = result.Attributes
+            .Where(x => x.Category == GetAttributesAttributes.CategoryEnum.Normal || x.Category == GetAttributesAttributes.CategoryEnum.Category)
+            .ToList();
 
-                    Console.WriteLine("Digite a chave do atributo a ser atualizado:");
-                    string NomeAtributoAtualizar = Console.ReadLine();
+        foreach (var atributo in atributosNormaisEcategoria)
+        {
+            Console.WriteLine($"Nome do atributo: {atributo.Name}");
+            Console.WriteLine($"Tipo do atributo: {atributo.Type}");
+            Console.WriteLine($"Categoria do atributo: {atributo.Category}");
 
-                    Console.WriteLine("Digite o valor do atributo:");
-                    string ValorAtributoAtualizar = Console.ReadLine();
+            if (atributo.Category == GetAttributesAttributes.CategoryEnum.Category)
+            {
+                Console.WriteLine($"Subcategorias do atributo: ");
+                foreach (var subcategoria in atributo.Enumeration)
+                {
+                    Console.WriteLine($"- {subcategoria.Label}");
+                }
+            }
 
-                    var attributesToUpdate = new Dictionary<string, object>()
-                    {
-                        { NomeAtributoAtualizar, ValorAtributoAtualizar }
-                    };
+            Console.WriteLine();
+        }
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine(e.Message);
+        Console.ReadLine();
+    }
+}
 
-                    await sendinBlueService.AtualizarAtributos(emailContato, attributesToUpdate);
-                    break;
+static void CriarContatoComAtributosDisponiveis(ContactsApi apiInstance)
+{
+    Console.WriteLine("========= CRIAR CONTATO =========");
 
-                case "5":
-                    Console.WriteLine("Digite o nome do atributo:");
-                    string nomeAtributo = Console.ReadLine();
-                    string categoria = "normal";
-                    // Defina o tipo do atributo como "boolean" ou qualquer outro tipo suportado pelo Sendinblue
-                    Console.WriteLine("Digite o tipo do atributo:");
-                    string tipoAtributo = Console.ReadLine();
-                    await sendinBlueService.CriarAtributo(categoria, nomeAtributo, tipoAtributo);
-                    break;
+    try
+    {
+        Console.WriteLine("Digite o e-mail do contato:");
+        string email = Console.ReadLine();
 
-                case "6":
-                    // Chamar o método BuscarUsuarios
-                    string response = await sendinBlueService.BuscarUsuariosResponse();
+        // Obter os atributos preenchíveis do usuário
+        GetAttributes attributeResult = apiInstance.GetAttributes();
+        List<string> attributeNames = attributeResult.Attributes.Where(x => x.Category == GetAttributesAttributes.CategoryEnum.Normal || x.Category == GetAttributesAttributes.CategoryEnum.Category).Select(a => a.Name).ToList();
 
-                    // Verificar se a resposta é válida
-                    if (response != null)
-                    {
-                        // Processar a resposta conforme necessário
-                        Console.WriteLine("Resposta da API:");
-                        Console.WriteLine(response);
-                    }
-                    else
-                    {
-                        // Tratar o caso de erro na resposta
-                        Console.WriteLine("Erro ao buscar os usuários.");
-                    }
+        Dictionary<string, object> attributes = new Dictionary<string, object>();
 
-                    break;
-
-                case "0":
-                    exit = true;
-                    break;
-
-                default:
-                    Console.WriteLine("Opção inválida. Digite uma opção válida.");
-                    break;
+        foreach (var attributeName in attributeNames)
+        {
+            Console.WriteLine($"Digite o valor para o atributo '{attributeName}':");
+            string attributeValue = Console.ReadLine();
+            if (bool.TryParse(attributeValue, out bool atributoValorBool))
+            {
+                attributes.Add(attributeName, atributoValorBool);
+            }
+            else
+            {
+                attributes.Add(attributeName, attributeValue);
             }
         }
+
+        // Criando um objeto de contato
+        CreateContact contato = new CreateContact
+        {
+            Email = email,
+            ListIds = new List<long?> { 1 }, // IDs das listas de contatos às quais você deseja adicionar o contato (caso tenha)
+            UpdateEnabled = true, // Defina como true para atualizar o contato se ele já existir ou false para criar um novo contato
+            Attributes = attributes
+        };
+
+        // Criando o contato
+        CreateUpdateContactModel result = apiInstance.CreateContact(contato);
+        Console.WriteLine("Contato criado com sucesso. ID do contato: " + result.Id);
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("Exception when calling ContactsApi.CreateContact: " + e.Message);
     }
 }
